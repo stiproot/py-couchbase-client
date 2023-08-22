@@ -1,16 +1,20 @@
-from couchbase.cluster import Cluster, ClusterOptions
-from couchbase_core.cluster import PasswordAuthenticator
+from couchbase.cluster import Cluster
+from couchbase.options import ClusterOptions
+from couchbase.auth import PasswordAuthenticator
 from couchbase.exceptions import CouchbaseException
+from secret_provider import SecretProvider
 
 
 class CouchbaseClusterFactory:
     def __init__(self):
-        pass
+        self._secret_provider = SecretProvider()
 
     def create_cluster(self):
+        username = self._secret_provider.get_secret("COUCHBASE_USERNAME")
+        password = self._secret_provider.get_secret("COUCHBASE_PASSWORD")
         return Cluster(
             "couchbase://localhost",
-            ClusterOptions(PasswordAuthenticator("username", "password")),
+            ClusterOptions(PasswordAuthenticator(username, password)),
         )
 
 
@@ -18,18 +22,18 @@ class CouchbaseBucketManager:
     def __init__(self):
         self._cluster_factory = CouchbaseClusterFactory()
         self._cluster = self._cluster_factory.create_cluster()
-        pass
 
     def get_bucket(self, bucket_name):
         return self._cluster.bucket(bucket_name)
 
     def upsert(self, bucket_name, document_id, json_payload):
         bucket = self.get_bucket(bucket_name)
-        bucket.upsert(document_id, json_payload)
+        scope = bucket.scope("scope_tmp")
+        collection = scope.collection("collection_tmp")
+        collection.upsert(document_id, json_payload)
 
     def query(self, bucket_name, query, params):
-        bucket = self.get_bucket(bucket_name)
-        return self._cluster.query(query, parameters=params)
+        return self._cluster.query(query, params=params)
 
-    def disconnect(self):
-        self._cluster.disconnect()
+    def close(self):
+        self._cluster.close()
