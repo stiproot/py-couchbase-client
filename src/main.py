@@ -41,4 +41,4 @@ async def query():
 
 
 # asyncio.run(upsert())
-asyncio.run(query())
+# asyncio.run(query())
