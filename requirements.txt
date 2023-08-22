@@ -1,2 +1,2 @@
 couchbase==4.1.7
-dotenv==0.0.5
+dotenv==0.0.1
