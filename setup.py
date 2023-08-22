@@ -36,9 +36,8 @@ setup(
     keywords=keywords,
     install_requires=install_requires,
     classifiers=[
-        "Development Status :: 0 - Beta",
         "Intended Audience :: Developers",
         "License :: MIT License",
-        "Programming Language :: Python :: 3.11.4",
+        "Programming Language :: Python :: 3.11",
     ],
 )
