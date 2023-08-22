@@ -1,8 +1,28 @@
+from couchbase.bucket import Bucket
 from couchbase.cluster import Cluster
 from couchbase.options import ClusterOptions
 from couchbase.auth import PasswordAuthenticator
 from couchbase.exceptions import CouchbaseException
 from secret_provider import SecretProvider
+from typing import Optional
+
+
+class Cmd:
+    id: str
+    payload: dict
+
+    def __init__(self, id, payload):
+        self.id = id
+        self.payload = payload
+
+
+class Qry:
+    query: str
+    params: list
+
+    def __init__(self, query, params: Optional[list] = []):
+        self.query = query
+        self.params = params
 
 
 class CouchbaseClusterFactory:
@@ -18,22 +38,50 @@ class CouchbaseClusterFactory:
         )
 
 
-class CouchbaseBucketManager:
+class CouchbaseClusterManager:
     def __init__(self):
         self._cluster_factory = CouchbaseClusterFactory()
         self._cluster = self._cluster_factory.create_cluster()
 
-    def get_bucket(self, bucket_name):
-        return self._cluster.bucket(bucket_name)
-
-    def upsert(self, bucket_name, document_id, json_payload):
-        bucket = self.get_bucket(bucket_name)
-        scope = bucket.scope("scope_tmp")
-        collection = scope.collection("collection_tmp")
-        collection.upsert(document_id, json_payload)
-
-    def query(self, bucket_name, query, params):
-        return self._cluster.query(query, params=params)
+    def get_cluster(self):
+        return self._cluster
 
     def close(self):
         self._cluster.close()
+
+
+class CouchbaseCollectionManager:
+    def __init__(self, bucket_name: str, scope_name: str, collection_name: str):
+        self._scope_name = scope_name
+        self._collection_name = collection_name
+        self._cluster_manager = CouchbaseClusterManager()
+        self._bucket = self._cluster_manager.get_cluster().bucket(bucket_name)
+
+    def get_scope(self):
+        return self._bucket.scope(self._scope_name)
+
+    def get_collection(self):
+        return self.get_scope().collection(self._collection_name)
+
+    async def upsert(self, document_id, json_payload):
+        collection = self.get_collection()
+        collection.upsert(document_id, json_payload)
+
+
+class CouchbaseCmdManager:
+    def __init__(self, bucket_name: str, scope_name: str, collection_name: str):
+        self._collection = CouchbaseCollectionManager(
+            bucket_name, scope_name, collection_name
+        )
+
+    async def command(self, cmd: Cmd):
+        return await self._collection.upsert(cmd.id, cmd.payload)
+
+
+class CouchbaseQryManager:
+    def __init__(self):
+        self._cluster_manager = CouchbaseClusterManager()
+        pass
+
+    def query(self, qry: Qry):
+        return self._cluster_manager.get_cluster().query(qry.query, params=qry.params)
