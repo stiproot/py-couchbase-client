@@ -1,10 +1,11 @@
 import os
-from dotenv import load_dotenv
+from environs import Env
 
 
 class SecretProvider:
     def __init__(self):
-        load_dotenv()
+        self._env = Env()
+        self._env.read_env()
 
     def get_secret(self, secret_name: str) -> str:
-        return os.environ.get(secret_name)
+        return self._env(secret_name)
