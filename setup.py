@@ -37,7 +37,7 @@ setup(
     install_requires=install_requires,
     classifiers=[
         "Intended Audience :: Developers",
-        "License :: MIT License",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.11",
     ],
 )
