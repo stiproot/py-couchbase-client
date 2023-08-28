@@ -7,7 +7,7 @@ from secret_provider import SecretProvider
 from typing import Optional
 
 
-class Cmd:
+class CbCmd:
     id: str
     payload: dict
 
@@ -16,7 +16,7 @@ class Cmd:
         self.payload = payload
 
 
-class Qry:
+class CbQry:
     query: str
     params: list
 
@@ -74,7 +74,7 @@ class CouchbaseCmdManager:
             bucket_name, scope_name, collection_name
         )
 
-    async def command(self, cmd: Cmd):
+    async def command(self, cmd: CbCmd):
         return await self._collection.upsert(cmd.id, cmd.payload)
 
 
@@ -83,5 +83,5 @@ class CouchbaseQryManager:
         self._cluster_manager = CouchbaseClusterManager()
         pass
 
-    def query(self, qry: Qry):
+    def query(self, qry: CbQry):
         return self._cluster_manager.get_cluster().query(qry.query, params=qry.params)

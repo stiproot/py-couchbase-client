@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
-# metadata
+# metadata...
 name = "pyxi_couchbase_client"
-version = "0.0.3"
+version = "0.0.5"
 description = "A basic couchbase client for python."
 long_description = ""
 author = "Simon Stipcich"
@@ -14,18 +14,18 @@ keywords = ["python", "package", "couchbase", "beta"]
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
-# dependencies
+# dependencies...
 install_requires = [
     "environs",
     "couchbase",
 ]
 
-# setup
+# setup...
 setup(
-    packages=find_packages("src"),
-    # package_dir={"", "src"},
     name=name,
     version=version,
+    packages=find_packages(where="src"),
+    package_dir={"pyxi_couchbase_client": "src/pyxi_couchbase_client"},
     description=description,
     long_description=long_description,
     long_description_content_type="text/markdown",
