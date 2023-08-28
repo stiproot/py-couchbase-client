@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 # metadata
 name = "pyxi_couchbase_client"
-version = "0.0.2"
+version = "0.0.3"
 description = "A basic couchbase client for python."
 long_description = ""
 author = "Simon Stipcich"
