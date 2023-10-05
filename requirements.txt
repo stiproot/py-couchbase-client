@@ -1,2 +1,2 @@
 environs==9.5.0
-confluent_kafka==2.2.0
+couchbase==4.1.7
