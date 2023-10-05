@@ -1,8 +1,6 @@
-from couchbase.bucket import Bucket
 from couchbase.cluster import Cluster
 from couchbase.options import ClusterOptions
 from couchbase.auth import PasswordAuthenticator
-from couchbase.exceptions import CouchbaseException
 from secret_provider import SecretProvider
 from typing import Optional
 
