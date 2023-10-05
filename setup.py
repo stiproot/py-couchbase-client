@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 # metadata...
 name = "pyxi_couchbase_client"
-version = "0.0.9"
+version = "0.0.10"
 description = "A basic couchbase client for python."
 long_description = ""
 author = "Simon Stipcich"
@@ -15,10 +15,7 @@ with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 # dependencies...
-install_requires = [
-    "environs",
-    "couchbase",
-]
+install_requires = ["environs==9.5.0", "couchbase==4.1.8"]
 
 # setup...
 setup(
